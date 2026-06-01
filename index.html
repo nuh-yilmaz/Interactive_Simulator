@@ -1,412 +1,1403 @@
-<!doctype html>
-<html lang="tr">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Kâğıt Kayık — Katılımcı Sayfası</title>
-  <style>
-    :root{
-      --bg:#f6f6f1; --panel:#fff; --ink:#1f1f1f; --muted:#606060; --line:#2a2a2a;
-      --soft:#efefea; --soft2:#d8d8cf; --paper:#fffdf6; --paper2:#f0eadb;
-      --ok:#2e7d32; --blue:#1f4b73; --warn:#7a5600;
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    body{padding:14px}
-    .app{max-width:1120px;margin:0 auto;display:grid;gap:14px}
-    header{background:var(--panel);border:2px solid var(--line);border-radius:22px;padding:18px 20px;box-shadow:0 8px 24px rgba(0,0,0,.06)}
-    h1{margin:0 0 6px;font-size:clamp(1.55rem,4vw,2.55rem);letter-spacing:-.035em}
-    .subtitle{margin:0;color:var(--muted);font-size:1.05rem;line-height:1.35}
-    .main{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
-    .stage,.panel{background:var(--panel);border:2px solid var(--line);border-radius:22px;box-shadow:0 8px 24px rgba(0,0,0,.06)}
-    .stage{padding:15px;display:grid;gap:12px}
-    .panel{padding:16px}
-    .svg-wrap{display:grid;place-items:center;background:linear-gradient(180deg,#fff,#f3f3ee);border:1px solid var(--soft2);border-radius:18px;min-height:430px;overflow:hidden}
-    svg{width:min(100%,780px);height:auto;display:block}
-    .paper{fill:var(--paper);stroke:var(--line);stroke-width:4;stroke-linejoin:round}
-    .shade{fill:var(--paper2);stroke:var(--line);stroke-width:4;stroke-linejoin:round}
-    .ghost{opacity:.22}
-    .crease{stroke:#9a9a9a;stroke-width:2.5;stroke-dasharray:9 7}
-    .arrow{stroke:#333;stroke-width:5.5;fill:none;marker-end:url(#arrowHead);stroke-linecap:round}
-    .blueArrow{stroke:var(--blue);stroke-width:6;fill:none;marker-end:url(#blueArrowHead);stroke-linecap:round}
-    .hand{fill:#fff;stroke:#333;stroke-width:3}
-    .handText{font-size:14px;font-weight:900;fill:#333;text-anchor:middle}
-    .label{font-size:23px;font-weight:850;fill:#222}
-    .hint{font-size:18px;font-weight:650;fill:#555}
-    .tiny{font-size:15px;font-weight:800;fill:#555}
-    .progress{height:15px;border-radius:999px;border:1px solid var(--soft2);background:var(--soft);overflow:hidden}
-    .bar{height:100%;width:8.3%;background:var(--line);transition:width .25s ease}
-    .step-line{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-weight:800;align-items:center}
-    .pill{background:var(--soft);border:1px solid var(--soft2);padding:5px 10px;border-radius:999px;color:var(--muted)}
-    .controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-    button{border:2px solid var(--line);background:var(--ink);color:#fff;border-radius:999px;padding:12px 16px;font-weight:850;cursor:pointer;min-width:118px;font-size:1rem}
-    button.secondary{background:#fff;color:var(--ink)}
-    button:focus-visible{outline:4px solid #b7b7ae;outline-offset:2px}
-    .titleRow{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:8px}
-    h2{margin:0;font-size:clamp(1.45rem,3vw,2rem);letter-spacing:-.025em}
-    .bigStep{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:start;margin:10px 0 14px}
-    .num{width:44px;height:44px;border-radius:14px;background:var(--line);color:#fff;display:grid;place-items:center;font-size:1.25rem;font-weight:950}
-    .instruction{font-size:1.25rem;line-height:1.42;margin:0}
-    .checkCard{border:2px solid var(--line);border-radius:18px;padding:13px;background:#fbfbf8;margin:12px 0}
-    .checkTitle{font-weight:900;margin-bottom:4px}
-    .checkText{font-size:1.05rem;line-height:1.35;color:var(--muted)}
-    .selfCheck{display:flex;gap:10px;align-items:center;justify-content:space-between;border:1px solid var(--soft2);background:#fff;border-radius:16px;padding:12px;margin:12px 0}
-    .selfCheck.done{border-color:var(--ok);box-shadow:inset 0 0 0 2px var(--ok)}
-    .selfCheck strong{font-size:1.05rem}
-    .tickBtn{min-width:92px;padding:9px 12px;background:#fff;color:var(--ink)}
-    .selfCheck.done .tickBtn{background:var(--ok);border-color:var(--ok);color:white}
-    details{border:1px solid var(--soft2);background:#fff;border-radius:16px;padding:12px;margin-top:12px}
-    summary{font-weight:900;cursor:pointer}
-    .help{color:var(--muted);line-height:1.42;margin-top:9px}
-    .materials{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
-    .mat{background:var(--soft);border:1px solid var(--soft2);border-radius:16px;padding:11px;text-align:center;font-weight:850}
-    .stepsList{display:grid;gap:7px;margin-top:14px;max-height:270px;overflow:auto;padding-right:4px}
-    .mini{display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:start;border:1px solid var(--soft2);border-radius:13px;padding:8px;background:#fff;cursor:pointer}
-    .mini.current{border-color:var(--line);box-shadow:inset 0 0 0 1px var(--line)}
-    .dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:.75rem;font-weight:900}
-    .mini.done .dot{background:var(--ok);border-color:var(--ok);color:#fff}
-    .miniTitle{font-weight:850;font-size:.92rem}
-    .miniText{color:var(--muted);font-size:.82rem;line-height:1.2}
-    .finish{display:none;border:2px solid var(--ok);background:#f4fbf4;border-radius:18px;padding:14px;margin-top:14px}
-    .finish.show{display:block}
-    @media(max-width:900px){
-      body{padding:10px}
-      .main{grid-template-columns:1fr}
-      .svg-wrap{min-height:330px}
-      .materials{grid-template-columns:1fr}
-      .stepsList{max-height:none}
-    }
-    @media print{
-      body{background:#fff;padding:0}
-      .controls,.stepsList,.progress,.step-line,details{display:none}
-      .main{grid-template-columns:1fr 1fr}
-      header,.stage,.panel{box-shadow:none}
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solunum Fizyolojisi Simülatörü</title>
+<style>
+  :root{
+    --bg:#08101f;
+    --panel:#111936;
+    --panel2:#0d1630;
+    --text:#eef3ff;
+    --muted:#9eb0e8;
+    --accent:#7dd3fc;
+    --accent2:#a78bfa;
+    --good:#31d0a4;
+    --warn:#fbbf24;
+    --bad:#fb7185;
+    --border:rgba(125,211,252,.16);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(125,211,252,.14), transparent 25%),
+      radial-gradient(circle at 85% 15%, rgba(167,139,250,.12), transparent 28%),
+      linear-gradient(180deg,#040713,#08101f 35%,#08101f);
+    color:var(--text);
+  }
+
+  .container{max-width:1600px;margin:0 auto;padding:18px}
+  header{text-align:center;margin-bottom:16px}
+  h1{margin:0 0 6px;font-size:28px;letter-spacing:.2px}
+  .subtitle{color:var(--muted);font-size:14px}
+
+  .main-grid{
+    display:grid;
+    grid-template-columns:320px 1fr;
+    gap:16px;
+  }
+
+  .card{
+    background:linear-gradient(180deg,rgba(17,25,54,.96),rgba(12,18,42,.96));
+    border:1px solid var(--border);
+    border-radius:18px;
+    box-shadow:0 16px 50px rgba(0,0,0,.35);
+  }
+
+  .controls{
+    padding:16px;
+    max-height:92vh;
+    overflow:auto;
+  }
+
+  .control-section{margin-bottom:16px}
+  .section-title{
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.8px;
+    color:var(--accent);
+    margin-bottom:10px;
+  }
+
+  .control-group{margin:12px 0}
+  .control-label{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:7px;
+  }
+
+  .control-value{
+    color:var(--text);
+    font-size:12px;
+    font-weight:700;
+    min-width:70px;
+    text-align:right;
+  }
+
+  input[type=range]{
+    width:100%;
+    height:7px;
+    -webkit-appearance:none;
+    background:linear-gradient(90deg,#122140,#192b57);
+    border-radius:999px;
+    outline:none;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
+  }
+
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:18px;height:18px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #fff, var(--accent) 55%, #4ccfff 100%);
+    box-shadow:0 0 0 4px rgba(125,211,252,.12), 0 2px 8px rgba(0,0,0,.35);
+    cursor:pointer;
+  }
+
+  select{
+    width:100%;
+    padding:10px 12px;
+    background:var(--panel2);
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:10px;
+    font-size:13px;
+    cursor:pointer;
+    outline:none;
+  }
+
+  .btn-group{display:flex;gap:8px;margin-top:12px}
+  button{
+    flex:1;
+    padding:10px 12px;
+    background:linear-gradient(180deg,#172247,#101a38);
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:12px;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.15s ease;
+  }
+  button:hover{
+    transform:translateY(-1px);
+    border-color:rgba(125,211,252,.35);
+    box-shadow:0 8px 20px rgba(0,0,0,.24);
+  }
+
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-top:14px;
+  }
+  .stat-box{
+    background:linear-gradient(180deg,#0f1834,#0d152d);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    padding:12px;
+    text-align:center;
+  }
+  .stat-label{
+    font-size:11px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.7px;
+    margin-bottom:4px;
+  }
+  .stat-value{
+    font-size:20px;
+    font-weight:800;
+    color:var(--accent);
+  }
+
+  .spo2-card{
+    margin-top:14px;
+    padding:12px;
+    border-radius:14px;
+    border:1px solid rgba(125,211,252,.14);
+    background:linear-gradient(180deg,rgba(125,211,252,.08),rgba(125,211,252,.03));
+  }
+  .spo2-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .spo2-title{
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.8px;
+    color:var(--accent);
+  }
+  .spo2-readout{
+    font-size:28px;
+    font-weight:900;
+    line-height:1;
+    color:var(--good);
+  }
+  .spo2-scale{
+    position:relative;
+    height:18px;
+    border-radius:999px;
+    overflow:hidden;
+    background:linear-gradient(90deg,#fb7185 0%,#fbbf24 35%,#31d0a4 60%,#31d0a4 100%);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+  }
+  .spo2-marker{
+    position:absolute;
+    top:-4px;
+    width:10px;
+    height:26px;
+    transform:translateX(-50%);
+    border-radius:999px;
+    background:#fff;
+    box-shadow:0 0 0 4px rgba(255,255,255,.12), 0 2px 10px rgba(0,0,0,.35);
+  }
+  .spo2-labels{
+    display:flex;
+    justify-content:space-between;
+    font-size:11px;
+    color:var(--muted);
+    margin-top:6px;
+  }
+  .spo2-note{
+    margin-top:8px;
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.45;
+  }
+
+  .info-box{
+    margin-top:12px;
+    padding:12px;
+    border-radius:14px;
+    border:1px solid rgba(125,211,252,.14);
+    background:linear-gradient(180deg,rgba(125,211,252,.08),rgba(125,211,252,.03));
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.55;
+  }
+
+  .simulation{padding:16px}
+  .anim-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-bottom:16px;
+  }
+
+  .panel{
+    background:linear-gradient(180deg,#0f1733,#0b1328);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:16px;
+    padding:14px;
+    min-height:355px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .panel::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(125,211,252,.08), transparent 28%),
+      radial-gradient(circle at 70% 20%, rgba(167,139,250,.08), transparent 28%);
+    pointer-events:none;
+  }
+
+  .panel-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:12px;
+    position:relative;
+    z-index:1;
+  }
+
+  .panel-title{
+    font-size:15px;
+    font-weight:800;
+    color:#bfeaff;
+    letter-spacing:.2px;
+  }
+
+  .panel-status{
+    font-size:12px;
+    color:var(--muted);
+  }
+
+  canvas{
+    width:100%;
+    height:auto;
+    display:block;
+    background:linear-gradient(180deg,#081021,#060d19);
+    border-radius:14px;
+    position:relative;
+    z-index:1;
+  }
+
+  .charts-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+
+  .chart{height:250px}
+
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    margin-top:10px;
+    font-size:12px;
+    color:var(--muted);
+    position:relative;
+    z-index:1;
+  }
+
+  .legend-item{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+
+  .legend-dot{
+    width:10px;height:10px;border-radius:50%;
+    box-shadow:0 0 12px rgba(255,255,255,.1);
+  }
+
+  .gas-note{
+    margin-top:10px;
+    background:linear-gradient(180deg,rgba(52,211,153,.08),rgba(52,211,153,.03));
+    border-color:rgba(52,211,153,.22);
+  }
+
+  .phase-indicator{
+    display:inline-block;
+    padding:5px 11px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:800;
+    background:#0f1733;
+    border:1px solid rgba(255,255,255,.08);
+  }
+
+  .inspiration{color:var(--good)}
+  .expiration{color:var(--warn)}
+
+
+  .equation-box{
+    margin-top:12px;
+    padding:12px;
+    border-radius:14px;
+    border:1px solid rgba(125,211,252,.18);
+    background:linear-gradient(180deg,rgba(125,211,252,.08),rgba(125,211,252,.03));
+    color:var(--text);
+    font-size:13px;
+    line-height:1.55;
+  }
+  .equation-main{
+    font-size:19px;
+    font-weight:900;
+    color:#bfeaff;
+    margin-bottom:6px;
+  }
+  .fick-readout{
+    margin-top:12px;
+    padding:12px;
+    border-radius:14px;
+    border:1px solid rgba(52,211,153,.18);
+    background:linear-gradient(180deg,rgba(52,211,153,.09),rgba(52,211,153,.03));
+  }
+  .fick-readout .value{
+    font-size:28px;
+    font-weight:900;
+    color:var(--good);
+    line-height:1;
+  }
+  .fick-readout .caption{
+    margin-top:6px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.45;
+  }
+  .interp-list{
+    margin:8px 0 0;
+    padding-left:17px;
+  }
+  .interp-list li{
+    margin:6px 0;
+  }
+
+  .aesthetic-note{
+    color:#d7ecff;
+  }
+
+  .fick-status{
+    display:inline-block;
+    padding:5px 10px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.08);
+    background:#0f1733;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:800;
+  }
+
+  @media(max-width:1100px){
+    .main-grid,.anim-row,.charts-row{grid-template-columns:1fr}
+    .controls{max-height:none}
+  }
+</style>
 </head>
 <body>
-<main class="app">
+<div class="container">
   <header>
-    <h1>Kâğıt Kayık Yapımı</h1>
-    <p class="subtitle">Kendi hızında ilerle. Her adımda görsele bak, kâğıdını aynı şekle getir, sonra “Tamam” işaretle.</p>
-    <div class="materials">
-      <div class="mat">1 adet A4 kâğıt</div>
-      <div class="mat">Düz bir masa</div>
-      <div class="mat">Yaklaşık 5 dakika</div>
-    </div>
+    <h1>Solunum Fizyolojisi Simülatörü</h1>
+    <div class="subtitle">Ventilasyon • Gaz değişimi • Fick yasası • Etkileşimli fizyoloji anlatımı</div>
   </header>
 
-  <section class="main">
-    <section class="stage" aria-label="Kâğıt kayık görsel adımları">
-      <div class="svg-wrap" id="svgWrap"></div>
-
-      <div class="progress" aria-hidden="true"><div id="bar" class="bar"></div></div>
-      <div class="step-line">
-        <span id="stepCount">Adım 1 / 12</span>
-        <span class="pill" id="phaseLabel">Başlangıç</span>
+  <div class="main-grid">
+    <div class="card controls">
+      <div class="control-section">
+        <div class="section-title">Breathing Mode</div>
+        <select id="mode">
+          <option value="quiet">Quiet Breathing (Rest)</option>
+          <option value="force">Forceful Breathing</option>
+          <option value="exercise">Exercise</option>
+          <option value="deep">Deep Slow Breathing</option>
+          <option value="rapid">Rapid Shallow Breathing</option>
+        </select>
       </div>
 
-      <div class="controls">
-        <button class="secondary" id="prevBtn">Geri</button>
-        <button id="doneNextBtn">Tamam, sonraki</button>
-        <button class="secondary" id="nextBtn">Atla</button>
-        <button class="secondary" id="resetBtn">Başa dön</button>
-      </div>
-    </section>
-
-    <aside class="panel">
-      <div class="titleRow">
-        <h2 id="stepTitle">Kâğıdı dik tut</h2>
-        <span class="pill" id="timeLabel">0:00</span>
-      </div>
-
-      <div class="bigStep">
-        <div class="num" id="numBox">1</div>
-        <p class="instruction" id="instruction"></p>
+      <div class="control-section">
+        <div class="section-title">Ventilation Controls</div>
+        <div class="control-group">
+          <div class="control-label"><span>Respiratory Rate</span><span class="control-value" id="rrv">12 bpm</span></div>
+          <input id="rr" type="range" min="6" max="40" step="1" value="12">
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Tidal Volume</span><span class="control-value" id="tvv">0.50 L</span></div>
+          <input id="tv" type="range" min="0.2" max="2.0" step="0.05" value="0.5">
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Dead Space</span><span class="control-value" id="dsv">0.15 L</span></div>
+          <input id="ds" type="range" min="0.05" max="0.35" step="0.01" value="0.15">
+        </div>
       </div>
 
-      <div class="checkCard">
-        <div class="checkTitle">Benim kâğıdım böyle mi?</div>
-        <div class="checkText" id="lookFor"></div>
+      <div class="control-section">
+        <div class="section-title">Mechanics</div>
+        <div class="control-group">
+          <div class="control-label"><span>Airway Resistance</span><span class="control-value" id="arv">1.0</span></div>
+          <input id="ar" type="range" min="0.3" max="4.0" step="0.1" value="1.0">
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Lung Compliance</span><span class="control-value" id="cv">1.0</span></div>
+          <input id="c" type="range" min="0.3" max="3.0" step="0.1" value="1.0">
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Muscle Effort</span><span class="control-value" id="mev">1.0</span></div>
+          <input id="me" type="range" min="0.3" max="3.0" step="0.1" value="1.0">
+        </div>
       </div>
 
-      <div class="selfCheck" id="selfCheck">
-        <strong>Bu adım tamamlandı mı?</strong>
-        <button class="tickBtn" id="checkBtn">Tamam</button>
+
+      <div class="control-section">
+        <div class="section-title">Diffusion / Fick Law</div>
+        <div class="control-group">
+          <div class="control-label"><span>Membrane Thickness</span><span class="control-value" id="thickv">1.0</span></div>
+          <input id="thick" type="range" min="0.5" max="5.0" step="0.1" value="1.0">
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Diffusion Surface Area</span><span class="control-value" id="areav">1.0</span></div>
+          <input id="area" type="range" min="0.2" max="1.5" step="0.1" value="1.0">
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Diffusion Coefficient</span><span class="control-value" id="diffv">1.0</span></div>
+          <input id="diff" type="range" min="0.4" max="1.8" step="0.1" value="1.0">
+        </div>
+        <div class="fick-readout">
+          <div class="section-title" style="margin-bottom:6px;">Relative diffusion capacity</div>
+          <div class="value" id="fickcap">1.00×</div>
+          <div class="caption" id="fickcapnote">Normal alveol–kapiller geçiş.</div>
+        </div>
       </div>
 
-      <details>
-        <summary>Takıldım, daha açık anlat</summary>
-        <div class="help" id="helpText"></div>
-      </details>
-
-      <details>
-        <summary>Sık yapılan hata</summary>
-        <div class="help" id="mistakeText"></div>
-      </details>
-
-      <div class="finish" id="finishBox">
-        <strong>Kayığın hazır.</strong><br>
-        Tabanını hafifçe açtıysan ve masada dengede duruyorsa tamamlandı.
+      <div class="control-section">
+        <div class="section-title">Environment</div>
+        <div class="control-group">
+          <div class="control-label"><span>Altitude</span><span class="control-value" id="altv">0 m</span></div>
+          <input id="alt" type="range" min="0" max="6000" step="100" value="0">
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>FiO₂</span><span class="control-value" id="fio2v">0.21</span></div>
+          <input id="fio2" type="range" min="0.16" max="1.0" step="0.01" value="0.21">
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Metabolic Demand</span><span class="control-value" id="mdv">1.0</span></div>
+          <input id="md" type="range" min="0.5" max="3.0" step="0.1" value="1.0">
+        </div>
       </div>
 
-      <div class="stepsList" id="stepsList" aria-label="Adım listesi"></div>
-    </aside>
-  </section>
-</main>
+      <div class="spo2-card">
+        <div class="spo2-top">
+          <div>
+            <div class="spo2-title">SpO₂ Indicator</div>
+            <div class="spo2-note">Normal: 95–100%</div>
+          </div>
+          <div class="spo2-readout" id="spo2read">99%</div>
+        </div>
+        <div class="spo2-scale">
+          <div class="spo2-marker" id="spo2marker" style="left:95%;"></div>
+        </div>
+        <div class="spo2-labels">
+          <span>Low</span>
+          <span>Caution</span>
+          <span>Normal</span>
+        </div>
+        <div class="spo2-note" id="spo2text">Oxygenation is in the normal range.</div>
+      </div>
+
+      <div class="btn-group">
+        <button id="playpause">Pause</button>
+        <button id="reset">Reset</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat-box"><div class="stat-label">Tidal Volume</div><div class="stat-value" id="vtstat">0.50 L</div></div>
+        <div class="stat-box"><div class="stat-label">Minute Vent</div><div class="stat-value" id="vestat">6.0 L/min</div></div>
+        <div class="stat-box"><div class="stat-label">Alveolar Vent</div><div class="stat-value" id="vastat">4.2 L/min</div></div>
+        <div class="stat-box"><div class="stat-label">SpO₂</div><div class="stat-value" id="spo2stat">99%</div></div>
+      </div>
+
+      <div class="info-box">
+        Change one variable at a time. Watch how breathing mechanics, airflow, and alveolar gas behavior change together.
+      </div>
+    </div>
+
+    <div class="card simulation">
+      <div class="anim-row">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Breathing Mechanics</div>
+            <div class="phase-indicator" id="phase">Inspiration</div>
+          </div>
+          <canvas id="lung" width="720" height="380"></canvas>
+          <div class="legend">
+            <div class="legend-item"><span class="legend-dot" style="background:var(--accent)"></span>Airflow</div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--accent2)"></span>Volume</div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--good)"></span>Diaphragm</div>
+          </div>
+          <div class="info-box gas-note" id="lungInterp">
+            <strong>Interpretation:</strong> The diaphragm now behaves by breathing mode: quiet breathing preserves the dome, forceful/deep breathing produces stronger descent and flattening, and rapid shallow breathing keeps motion limited. Bronchial expansion, airflow particles, and alveolar clusters remain visible.
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Gas Exchange (Alveoli ↔ Blood)</div>
+          </div>
+          <canvas id="gas" width="720" height="380"></canvas>
+          <div class="legend">
+            <div class="legend-item"><span class="legend-dot" style="background:var(--good)"></span>O₂</div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--bad)"></span>CO₂</div>
+          </div>
+          <div class="info-box gas-note" id="gasInterp">
+            <strong>Interpretation:</strong> O₂ moves from alveolus to blood; CO₂ moves from blood to alveolus. Fick variables modify the alveol–capillary barrier.
+          </div>
+        </div>
+      </div>
+
+
+      <div class="panel" style="margin-bottom:16px;">
+        <div class="panel-header">
+          <div class="panel-title">Fick Yasası: Alveol–Kapiller Bariyer</div>
+          <div class="fick-status" id="fickStatus">Normal diffusion</div>
+        </div>
+        <canvas id="fick" width="1480" height="360"></canvas>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-dot" style="background:var(--good)"></span>O₂ diffusion</div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--bad)"></span>CO₂ diffusion</div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--accent)"></span>Membrane thickness</div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--accent2)"></span>Surface area</div>
+        </div>
+        <div class="equation-box">
+          <div class="equation-main">V̇<sub>gas</sub> = D × A × ΔP / T</div>
+          <div id="fickEquationText">D, A ve ΔP arttıkça difüzyon artar; T arttıkça azalır.</div>
+        </div>
+        <div class="info-box gas-note" id="fickInterp">
+          <strong>Interpretation:</strong> This panel isolates diffusion. Thick membrane, low surface area, or low gradient reduces transfer even when ventilation is preserved.
+        </div>
+      </div>
+
+      <div class="charts-row">
+        <div class="panel chart">
+          <div class="panel-header">
+            <div class="panel-title">Lung Volume Over Time</div>
+            <div class="panel-status">Last 60 seconds</div>
+          </div>
+          <canvas id="volchart" width="720" height="260"></canvas>
+          <div class="info-box gas-note" id="volInterp">
+            <strong>Interpretation:</strong> The waveform shows tidal volume over time. Rate changes compress or widen cycles; tidal volume changes the amplitude.
+          </div>
+        </div>
+
+        <div class="panel chart">
+          <div class="panel-header">
+            <div class="panel-title">Alveolar Gases Over Time</div>
+            <div class="panel-status">O₂ and CO₂</div>
+          </div>
+          <canvas id="garchart" width="720" height="260"></canvas>
+          <div class="info-box gas-note" id="chartInterp">
+            <strong>Interpretation:</strong> O₂ and CO₂ trends summarize the combined effect of ventilation, altitude, FiO₂, metabolic demand, and diffusion capacity.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-const steps = [
-  {title:"Kâğıdı dik tut", phase:"Başlangıç", time:"0:00",
-   svg:"page",
-   instruction:"A4 kâğıdı masaya dikey koy. Kısa kenar yukarıda olsun.",
-   look:"Dikey duran bir A4 kâğıt görmelisin.",
-   help:"Kâğıt yataysa 90 derece çevir. Telefon ekranı gibi uzunlamasına durmalı.",
-   mistake:"Kâğıdı yatay başlatmak sonraki katlamaları zorlaştırır."},
-
-  {title:"İkiye katla", phase:"İlk kat", time:"0:20",
-   svg:"foldDown",
-   instruction:"Üst kenarı aşağı indir. Alt kenarla tam üst üste getir ve kat izini bastır.",
-   look:"Yarım A4 boyutunda yatay bir dikdörtgen oluşmalı.",
-   help:"Önce iki köşeyi hizala, sonra ortadan dışa doğru bastır.",
-   mistake:"Kenarları hizalamadan bastırırsan kayık yamuk olur."},
-
-  {title:"Kapalı kenarı üste al", phase:"Hazırlık", time:"0:35",
-   svg:"halfRect",
-   instruction:"Dikdörtgenin kapalı, katlı kenarı üstte kalsın. Açık kenarlar altta olsun.",
-   look:"Üst kenar tek parça kapalı; alt kenarda iki kâğıt katı var.",
-   help:"Yanlış duruyorsa bütün kâğıdı çevir. Katlı taraf yukarı bakmalı.",
-   mistake:"Açık kenarı üstte bırakmak, köşeleri indirirken karışıklık yaratır."},
-
-  {title:"Ortayı bul", phase:"Rehber iz", time:"0:45",
-   svg:"markCenter",
-   instruction:"Dikdörtgeni hafifçe ikiye katla, ortada küçük bir iz oluştur ve geri aç.",
-   look:"Dikdörtgenin ortasında dikey bir rehber çizgi olmalı.",
-   help:"Bu adımı tamamen kapalı bırakma. Amaç sadece ortayı işaretlemek.",
-   mistake:"Kâğıdı ikiye katlı bırakmak. İz oluşunca geri açmalısın."},
-
-  {title:"Üst köşeleri ortaya indir", phase:"Çatı", time:"1:10",
-   svg:"bothCorners",
-   instruction:"Üst sol ve üst sağ köşeyi orta çizgiye indir. Üstte çatı şekli oluşsun.",
-   look:"Üstte üçgen çatı, altta düz bir şerit kalmalı.",
-   help:"Köşeler ortadaki çizgide buluşmalı. Alttaki düz şeridi bu adımda katlama.",
-   mistake:"Alt şeridi de katlamak. Alttaki şerit bir sonraki adım için kalmalı."},
-
-  {title:"Alt şeritleri yukarı katla", phase:"Şapka", time:"1:55",
-   svg:"hat",
-   instruction:"Öndeki alt şeridi yukarı katla. Kâğıdı çevir ve arkadaki alt şeridi de yukarı katla.",
-   look:"Kâğıt şapka gibi görünmeli. Altta açılabilen bir cep var.",
-   help:"Ön şerit yukarı, çevir, arka şerit yukarı. İki yüz de katlanmalı.",
-   mistake:"Sadece bir şeridi katlamak. Şapka oluşmuyorsa diğer yüz unutulmuştur."},
-
-  {title:"Alt cebi aç", phase:"Elmas 1", time:"2:20",
-   svg:"pocket",
-   instruction:"Şapkanın alt açıklığını bul. Başparmaklarını bu açıklığın içine yerleştir.",
-   look:"Parmakların şapkanın altındaki cepte olmalı.",
-   help:"Üst sivri uçtan çekme. Açılacak yer şapkanın alt tarafındaki açıklıktır.",
-   mistake:"Üstten çekmeye çalışmak. Bu, kâğıdı bozabilir."},
-
-  {title:"Şapkayı elmas yap", phase:"Elmas 1", time:"2:35",
-   svg:"diamond",
-   instruction:"Alt cebi açarken sağ ve sol köşeyi birbirine yaklaştır. Şapka elmas şekline dönüşsün.",
-   look:"Bir sivri uç yukarıda, bir sivri uç aşağıda olan elmas/kare şekli oluşmalı.",
-   help:"Çekme hareketi değil, yaklaştırma hareketi yap. Sağ ve sol köşeler birbirine yaklaşmalı.",
-   mistake:"Yanlardan sertçe çekmek. Köşeleri birbirine yaklaştırırsan şekil kendiliğinden açılır."},
-
-  {title:"Alt uçları yukarı katla", phase:"Üçgen", time:"3:10",
-   svg:"triangle",
-   instruction:"Öndeki alt sivri ucu yukarı katla. Kâğıdı çevir, arkadaki alt sivri ucu da yukarı katla.",
-   look:"Küçük bir üçgen oluşmalı.",
-   help:"Ön alt uç yukarı, çevir, arka alt uç yukarı. İki yüz aynı şekilde katlanır.",
-   mistake:"Sadece bir yüzü katlamak. Üçgen oluşmuyorsa diğer yüz eksik kalmıştır."},
-
-  {title:"Tekrar elmas yap", phase:"Elmas 2", time:"3:50",
-   svg:"smallDiamond",
-   instruction:"Küçük üçgenin alt açıklığını aç. Sağ ve sol köşeyi birbirine yaklaştırarak küçük elmas yap.",
-   look:"Küçük bir elmas şekli görmelisin.",
-   help:"Bu, önceki elmas yapma hareketinin aynısıdır: alt cebi aç, yan köşeleri yaklaştır.",
-   mistake:"Kâğıdı zorla çekmek. Kat izleri doğruysa küçük elmas kolayca oluşur."},
-
-  {title:"İki serbest ucu çek", phase:"Kayık açılıyor", time:"4:35",
-   svg:"pullOpen",
-   instruction:"Küçük elmasın üstündeki iki serbest ucu tut. Birini sağa, diğerini sola doğru yavaşça çek.",
-   look:"Ortada iki üçgen yelken, altta kayık gövdesi belirmeli.",
-   help:"Çekeceğin yer alt köşeler değil. Üstte ayrılabilen iki ucu bul ve yavaşça yana çek.",
-   mistake:"Alt köşeleri çekmek. Alt köşeler çekilirse kayık açılmaz."},
-
-  {title:"Tabanı düzelt", phase:"Bitti", time:"4:50",
-   svg:"boat",
-   instruction:"Kayığın tabanını hafifçe aç. Gövdeyi düzelt ve masaya koy.",
-   look:"Kayık masada dengede durmalı.",
-   help:"Ortadaki yelkenleri ezme. Sadece alt gövdeyi hafifçe genişlet.",
-   mistake:"Ortayı bastırmak. Bu kayığın formunu bozabilir."}
-];
-
-let current = 0;
-const completed = new Set();
 const $ = id => document.getElementById(id);
+const ctx = id => $(id).getContext('2d');
 
-function svgBase(content){
-  return `<svg viewBox="0 0 800 560" role="img" aria-label="Kâğıt kayık adımı">
-    <defs>
-      <marker id="arrowHead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#333"></path></marker>
-      <marker id="blueArrowHead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#1f4b73"></path></marker>
-    </defs>${content}</svg>`;
+const C = {
+  bg:'#081021', grid:'rgba(255,255,255,0.08)', text:'#eef3ff', muted:'#9eb0e8',
+  accent:'#7dd3fc', accent2:'#a78bfa', good:'#31d0a4', warn:'#fbbf24', bad:'#fb7185'
+};
+
+const state = { t:0, running:true, volHist:[], gasHist:[], maxDataPoints:3600 };
+
+function clamp(x,a,b){ return Math.max(a, Math.min(b, x)); }
+function lerp(a,b,t){ return a + (b-a)*t; }
+
+function updateLabels(){
+  $('rrv').textContent = $('rr').value + ' bpm';
+  $('tvv').textContent = (+$('tv').value).toFixed(2) + ' L';
+  $('dsv').textContent = (+$('ds').value).toFixed(2) + ' L';
+  $('arv').textContent = (+$('ar').value).toFixed(1);
+  $('cv').textContent = (+$('c').value).toFixed(1);
+  $('mev').textContent = (+$('me').value).toFixed(1);
+  $('altv').textContent = $('alt').value + ' m';
+  $('fio2v').textContent = (+$('fio2').value).toFixed(2);
+  $('mdv').textContent = (+$('md').value).toFixed(1);
+  $('thickv').textContent = (+$('thick').value).toFixed(1);
+  $('areav').textContent = (+$('area').value).toFixed(1);
+  $('diffv').textContent = (+$('diff').value).toFixed(1);
+}
+['rr','tv','ds','ar','c','me','md','alt','fio2','thick','area','diff'].forEach(id => $(id).addEventListener('input', updateLabels));
+updateLabels();
+
+const modes = {
+  quiet:{rr:12,tv:0.5,ar:1.0,c:1.0,me:1.0,md:1.0,thick:1.0,area:1.0,diff:1.0},
+  force:{rr:24,tv:0.9,ar:1.5,c:1.0,me:2.0,md:1.3,thick:1.0,area:1.0,diff:1.0},
+  exercise:{rr:28,tv:1.2,ar:1.2,c:1.2,me:2.6,md:2.2,thick:1.0,area:1.1,diff:1.0},
+  deep:{rr:8,tv:1.4,ar:0.8,c:1.3,me:1.8,md:1.1,thick:1.0,area:1.0,diff:1.0},
+  rapid:{rr:32,tv:0.35,ar:1.8,c:0.9,me:1.4,md:1.5,thick:1.0,area:1.0,diff:1.0}
+};
+
+$('mode').addEventListener('change',()=>{
+  const m = modes[$('mode').value];
+  $('rr').value = m.rr; $('tv').value = m.tv; $('ar').value = m.ar;
+  $('c').value = m.c; $('me').value = m.me; $('md').value = m.md;
+  $('thick').value = m.thick; $('area').value = m.area; $('diff').value = m.diff;
+  updateLabels();
+});
+
+$('playpause').addEventListener('click',()=>{
+  state.running = !state.running;
+  $('playpause').textContent = state.running ? 'Pause' : 'Play';
+});
+
+$('reset').addEventListener('click',()=>{
+  state.t = 0;
+  state.volHist = [];
+  state.gasHist = [];
+});
+
+function physiology(){
+  const rrV = +$('rr').value;
+  const tvV = +$('tv').value;
+  const dsV = +$('ds').value;
+  const arV = +$('ar').value;
+  const comp = +$('c').value;
+  const meV = +$('me').value;
+  const mdV = +$('md').value;
+  const altV = +$('alt').value;
+  const fio2V = +$('fio2').value;
+  const thickV = +$('thick').value;
+  const areaV = +$('area').value;
+  const diffV = +$('diff').value;
+
+  const patm = 760 * Math.exp(-altV / 8000);
+  const pio2 = fio2V * (patm - 47);
+  const freq = rrV / 60;
+
+  const amp = clamp((tvV * (0.55 + 0.4 * meV)) / (0.5 + 0.35 * arV) / Math.sqrt(comp), 0.18, 2.2);
+  const phase = (state.t * freq * 2 * Math.PI) % (2 * Math.PI);
+  const inhale = Math.sin(phase);
+  const flow = amp * Math.cos(phase);
+  const vol = 2.6 + amp * inhale;
+
+  const vt = Math.max(0.05, amp * 0.72);
+  const ve = rrV * vt;
+  const va = rrV * Math.max(vt - dsV, 0.05);
+
+  const alveO2 = clamp(95 + (pio2 - 100) * 0.42 - mdV * 2.5 + 0.35 * va - arV * 1.2, 40, 180);
+  const alveCO2 = clamp(40 + mdV * 5 - va * 1.1, 15, 100);
+  const gradientO2 = clamp(alveO2 - 40, 5, 120);
+  const fickCap = clamp(diffV * areaV / thickV, 0.05, 4.8);
+  const o2Transfer = clamp(fickCap * gradientO2 / 55, 0.02, 5.0);
+  const diffusionPenalty = Math.max(0, 1 - fickCap) * 24;
+  const spo2 = clamp(99 - Math.max(0, 60 - alveO2) * 0.45 - diffusionPenalty, 70, 100);
+
+  return {freq,phase,inhale,flow,vol,vt,ve,va,alveO2,alveCO2,spo2,patm,pio2,amp,thickV,areaV,diffV,gradientO2,fickCap,o2Transfer};
 }
 
-function commonText(main, sub){
-  return `<text class="label" x="400" y="500" text-anchor="middle">${main}</text><text class="hint" x="400" y="528" text-anchor="middle">${sub}</text>`;
+function grid(c,w,h){
+  c.strokeStyle = C.grid;
+  c.lineWidth = 1;
+  for(let i=1;i<10;i++){
+    const y = h*i/10;
+    c.beginPath(); c.moveTo(0,y); c.lineTo(w,y); c.stroke();
+  }
+  for(let i=1;i<10;i++){
+    const x = w*i/10;
+    c.beginPath(); c.moveTo(x,0); c.lineTo(x,h); c.stroke();
+  }
 }
 
-function draw(type){
-  const svgs = {
-    page: `<rect class="paper" x="270" y="90" width="260" height="380" rx="4"></rect>
-      <path class="blueArrow" d="M400 80 C400 120 400 150 400 184"></path>` + commonText("A4 dikey", "Kısa kenar yukarıda."),
+function label(c,s,x,y,size=14,color=C.text,align='left'){
+  c.fillStyle = color;
+  c.font = size + 'px Arial';
+  c.textAlign = align;
+  c.fillText(s,x,y);
+}
 
-    foldDown: `<rect class="paper ghost" x="270" y="90" width="260" height="380" rx="4"></rect>
-      <rect class="shade" x="245" y="170" width="310" height="220" rx="4"></rect>
-      <line class="crease" x1="245" y1="280" x2="555" y2="280"></line>
-      <path class="blueArrow" d="M400 105 C400 145 400 170 400 205"></path>
-      <circle class="hand" cx="285" cy="105" r="16"></circle><circle class="hand" cx="515" cy="105" r="16"></circle>` + commonText("Üst kenarı indir", "Üst ve alt kenar birleşir."),
+function gradientCircle(c,x,y,r,inner,outer){
+  const g = c.createRadialGradient(x-r*0.25,y-r*0.25,r*0.05,x,y,r);
+  g.addColorStop(0,inner);
+  g.addColorStop(1,outer);
+  c.fillStyle = g;
+  c.beginPath(); c.arc(x,y,r,0,Math.PI*2); c.fill();
+}
 
-    halfRect: `<rect class="shade" x="230" y="165" width="340" height="230" rx="4"></rect>
-      <line class="crease" x1="230" y1="165" x2="570" y2="165"></line>
-      <text class="tiny" x="400" y="145" text-anchor="middle">KAPALI / KATLI KENAR</text>
-      <text class="tiny" x="400" y="420" text-anchor="middle">AÇIK KENARLAR</text>` + commonText("Dikdörtgen hazır", "Kapalı kenar üstte."),
+function roundedRect(c,x,y,w,h,r){
+  c.beginPath();
+  c.moveTo(x+r,y);
+  c.lineTo(x+w-r,y);
+  c.arcTo(x+w,y,x+w,y+r,r);
+  c.lineTo(x+w,y+h-r);
+  c.arcTo(x+w,y+h,x+w-r,y+h,r);
+  c.lineTo(x+r,y+h);
+  c.arcTo(x,y+h,x,y+h-r,r);
+  c.lineTo(x,y+r);
+  c.arcTo(x,y,x+r,y,r);
+  c.closePath();
+}
 
-    markCenter: `<rect class="shade" x="230" y="165" width="340" height="230" rx="4"></rect>
-      <line class="crease" x1="400" y1="165" x2="400" y2="395"></line>
-      <path class="arrow" d="M260 140 C305 155 350 172 392 205"></path>
-      <path class="arrow" d="M540 140 C495 155 450 172 408 205"></path>` + commonText("Ortayı işaretle", "Katla, iz yap, geri aç."),
+function updateSpo2Gauge(spo2){
+  $('spo2read').textContent = spo2.toFixed(0) + '%';
+  $('spo2stat').textContent = spo2.toFixed(0) + '%';
+  const pos = clamp((spo2 - 80) / 20 * 100, 0, 100);
+  $('spo2marker').style.left = pos + '%';
+  let color = 'var(--good)';
+  let text = 'Oxygenation is in the normal range.';
+  if(spo2 < 90){ color = 'var(--bad)'; text = 'Low oxygenation: this is below the normal range.'; }
+  else if(spo2 < 95){ color = 'var(--warn)'; text = 'Caution: oxygenation is slightly below normal.'; }
+  $('spo2read').style.color = color;
+  $('spo2text').textContent = text;
+}
 
-    bothCorners: `<rect class="paper ghost" x="230" y="165" width="340" height="230" rx="4"></rect>
-      <polygon class="paper" points="230,395 570,395 570,280 400,165 230,280"></polygon>
-      <polygon class="shade" points="230,165 400,165 400,280 230,280"></polygon>
-      <polygon class="shade" points="570,165 400,165 400,280 570,280"></polygon>
-      <line class="crease" x1="400" y1="165" x2="400" y2="395"></line>
-      <text class="tiny" x="400" y="420" text-anchor="middle">ALTTA DÜZ ŞERİT KALDI</text>` + commonText("Çatı şekli", "Köşeler ortada buluşur."),
 
-    hat: `<polygon class="paper" points="220,405 580,405 545,325 400,165 255,325"></polygon>
-      <polygon class="shade" points="255,325 545,325 580,405 220,405"></polygon>
-      <line class="crease" x1="255" y1="325" x2="545" y2="325"></line>
-      <text class="tiny" x="400" y="432" text-anchor="middle">ALTTA AÇILABİLEN CEP</text>` + commonText("Şapka şekli", "Ön ve arka şerit katlandı."),
+function updateInterpretations(p){
+  let lungMsg = "Diaphragm descent and chest expansion generate airflow. ";
+  if(+$('ar').value > 2.2) lungMsg += "Airway resistance is high, so airflow becomes mechanically limited. ";
+  else if(+$('c').value < 0.7) lungMsg += "Compliance is low, so lung expansion is restricted despite effort. ";
+  else if(+$('tv').value > 1.0) lungMsg += "Tidal expansion is large, consistent with deeper breathing. ";
+  else lungMsg += "Mechanics are near the expected resting pattern. ";
+  $('lungInterp').innerHTML = "<strong>Interpretation:</strong> " + lungMsg;
 
-    pocket: `<polygon class="paper" points="220,405 580,405 545,325 400,165 255,325"></polygon>
-      <polygon class="shade" points="255,325 545,325 580,405 220,405"></polygon>
-      <circle class="hand" cx="320" cy="410" r="17"></circle><text class="handText" x="320" y="415">1</text>
-      <circle class="hand" cx="480" cy="410" r="17"></circle><text class="handText" x="480" y="415">2</text>
-      <path class="blueArrow" d="M320 430 C340 445 365 448 390 440"></path>
-      <path class="blueArrow" d="M480 430 C460 445 435 448 410 440"></path>` + commonText("Alt cebi bul", "Parmaklar açıklığın içine girer."),
+  let gasMsg = `Alveolar O₂ is ${p.alveO2.toFixed(0)} mmHg and CO₂ is ${p.alveCO2.toFixed(0)} mmHg. `;
+  if(+$('alt').value > 2500) gasMsg += "Altitude lowers inspired oxygen availability, so alveolar O₂ falls even if ventilation is active. ";
+  if(+$('md').value > 1.8) gasMsg += "Metabolic demand is high, pushing CO₂ upward unless alveolar ventilation compensates. ";
+  if(p.fickCap < 0.7) gasMsg += "Diffusion capacity is reduced, so transfer across the barrier is limited. ";
+  $('gasInterp').innerHTML = "<strong>Interpretation:</strong> " + gasMsg;
 
-    diamond: `<polygon class="paper ghost" points="220,405 580,405 545,325 400,165 255,325"></polygon>
-      <polygon class="paper" points="400,120 575,285 400,450 225,285"></polygon>
-      <line class="crease" x1="400" y1="120" x2="400" y2="450"></line>
-      <line class="crease" x1="225" y1="285" x2="575" y2="285"></line>
-      <path class="blueArrow" d="M250 405 C300 380 345 350 380 300"></path>
-      <path class="blueArrow" d="M550 405 C500 380 455 350 420 300"></path>` + commonText("Elmas", "Şapka elmasa döndü."),
+  let volMsg = `The volume trace reflects respiratory rate (${+$('rr').value} bpm) and tidal volume (${(+$('tv').value).toFixed(2)} L). `;
+  if(+$('rr').value > 25 && +$('tv').value < 0.55) volMsg += "Rapid shallow breathing gives frequent small-amplitude cycles and may reduce alveolar ventilation when dead space is high. ";
+  else if(+$('tv').value > 1.0) volMsg += "Large amplitude cycles indicate deep breathing and higher minute ventilation. ";
+  else volMsg += "The pattern is compatible with quiet or mildly increased ventilation. ";
+  $('volInterp').innerHTML = "<strong>Interpretation:</strong> " + volMsg;
 
-    triangle: `<polygon class="paper" points="400,120 575,285 400,450 225,285"></polygon>
-      <polygon class="shade" points="400,450 575,285 400,285 225,285"></polygon>
-      <path class="blueArrow" d="M400 470 C400 420 400 365 400 300"></path>
-      <line class="crease" x1="225" y1="285" x2="575" y2="285"></line>
-      <text class="tiny" x="400" y="478" text-anchor="middle">ALT SİVRİ UÇLAR YUKARI</text>` + commonText("Küçük üçgen", "Ön ve arka uç katlanır."),
+  let chartMsg = `Trend lines combine ventilation and diffusion effects. Current SpO₂ is ${p.spo2.toFixed(0)}%. `;
+  if(p.spo2 < 90) chartMsg += "This indicates a marked oxygenation problem in the model. ";
+  else if(p.spo2 < 95) chartMsg += "This is below the usual normal range and should prompt attention to ventilation, FiO₂, altitude, and diffusion. ";
+  else chartMsg += "Oxygenation remains in the normal range. ";
+  $('chartInterp').innerHTML = "<strong>Interpretation:</strong> " + chartMsg;
 
-    smallDiamond: `<polygon class="paper ghost" points="400,130 565,420 235,420"></polygon>
-      <polygon class="paper" points="400,145 545,285 400,425 255,285"></polygon>
-      <line class="crease" x1="400" y1="145" x2="400" y2="425"></line>
-      <line class="crease" x1="255" y1="285" x2="545" y2="285"></line>
-      <circle class="hand" cx="255" cy="285" r="15"></circle><circle class="hand" cx="545" cy="285" r="15"></circle>` + commonText("Küçük elmas", "Alt cep tekrar açıldı."),
+  let fickMsg = `Relative diffusion capacity is ${p.fickCap.toFixed(2)}×. `;
+  if(p.thickV > 2.4) fickMsg += "The barrier is thickened; use this to illustrate edema or fibrosis. ";
+  if(p.areaV < 0.65) fickMsg += "Surface area is reduced; use this to illustrate emphysema-like loss of exchange area. ";
+  if(p.diffV < 0.75) fickMsg += "The diffusion coefficient is low, reducing gas movement for the same gradient. ";
+  if(p.fickCap >= 0.8 && p.fickCap <= 1.3) fickMsg += "The barrier is close to normal. ";
+  $('fickInterp').innerHTML = "<strong>Interpretation:</strong> " + fickMsg;
 
-    pullOpen: `<polygon class="paper ghost" points="400,145 545,285 400,425 255,285"></polygon>
-      <circle class="hand" cx="335" cy="235" r="16"></circle><text class="handText" x="335" y="240">L</text>
-      <circle class="hand" cx="465" cy="235" r="16"></circle><text class="handText" x="465" y="240">R</text>
-      <path class="blueArrow" d="M345 235 C300 235 260 235 220 235"></path>
-      <path class="blueArrow" d="M455 235 C500 235 540 235 580 235"></path>
-      <polygon class="paper" points="210,330 590,330 540,395 260,395"></polygon>
-      <polygon class="shade" points="285,330 400,175 400,330"></polygon>
-      <polygon class="paper" points="400,175 515,330 400,330"></polygon>` + commonText("Yana çek", "Kayık açılır."),
+  $('fickEquationText').innerHTML =
+    `Current calculation: D (${p.diffV.toFixed(1)}) × A (${p.areaV.toFixed(1)}) ÷ T (${p.thickV.toFixed(1)}) = <strong>${p.fickCap.toFixed(2)}×</strong>. ` +
+    `O₂ gradient ≈ ${p.gradientO2.toFixed(0)} mmHg.`;
+  $('fickcap').textContent = p.fickCap.toFixed(2) + '×';
+  let capNote = 'Normal alveol–kapiller geçiş.';
+  let status = 'Normal diffusion';
+  if(p.fickCap < 0.45){ capNote = 'Ciddi difüzyon kısıtlılığı.'; status = 'Severe diffusion limitation'; }
+  else if(p.fickCap < 0.8){ capNote = 'Azalmış difüzyon kapasitesi.'; status = 'Reduced diffusion'; }
+  else if(p.fickCap > 1.5){ capNote = 'Artmış göreli difüzyon kapasitesi.'; status = 'High diffusion capacity'; }
+  $('fickcapnote').textContent = capNote;
+  $('fickStatus').textContent = status;
+}
 
-    boat: `<polygon class="paper" points="155,330 645,330 585,405 215,405"></polygon>
-      <polygon class="shade" points="245,330 400,155 400,330"></polygon>
-      <polygon class="paper" points="400,155 555,330 400,330"></polygon>
-      <line class="crease" x1="400" y1="155" x2="400" y2="405"></line>
-      <path class="arrow" d="M300 415 C335 430 365 435 400 435"></path>
-      <path class="arrow" d="M500 415 C465 430 435 435 400 435"></path>` + commonText("Kayık hazır", "Tabanı hafifçe aç.")
+function drawFick(p){
+  const c = ctx('fick'), w = fick.width, h = fick.height;
+  c.clearRect(0,0,w,h);
+  c.fillStyle = C.bg; c.fillRect(0,0,w,h);
+  grid(c,w,h);
+
+  const leftX = 170, midX = w*0.50, rightX = w-180;
+  const cy = h*0.52;
+  const membraneW = 26 + p.thickV * 36;
+  const membraneH = 235;
+  const membraneX = midX - membraneW/2;
+  const membraneY = cy - membraneH/2;
+
+  // Alveolus and capillary regions
+  c.fillStyle = 'rgba(49,208,164,.06)';
+  roundedRect(c,36,66,midX-membraneW/2-54,250,22); c.fill();
+  c.fillStyle = 'rgba(251,113,133,.055)';
+  roundedRect(c,midX+membraneW/2+18,66,w-(midX+membraneW/2+54),250,22); c.fill();
+
+  // Surface area visual: vertical exchange contact height
+  const contactH = clamp(80 + p.areaV*120, 65, 250);
+  c.strokeStyle = C.accent2;
+  c.lineWidth = 9;
+  c.lineCap = 'round';
+  c.beginPath();
+  c.moveTo(midX - membraneW/2 - 14, cy - contactH/2);
+  c.lineTo(midX - membraneW/2 - 14, cy + contactH/2);
+  c.stroke();
+  c.beginPath();
+  c.moveTo(midX + membraneW/2 + 14, cy - contactH/2);
+  c.lineTo(midX + membraneW/2 + 14, cy + contactH/2);
+  c.stroke();
+
+  // Membrane
+  const mg = c.createLinearGradient(membraneX,0,membraneX+membraneW,0);
+  mg.addColorStop(0,'rgba(125,211,252,.18)');
+  mg.addColorStop(.5,'rgba(125,211,252,.34)');
+  mg.addColorStop(1,'rgba(125,211,252,.18)');
+  c.fillStyle = mg;
+  roundedRect(c,membraneX,membraneY,membraneW,membraneH,16); c.fill();
+  c.strokeStyle = 'rgba(125,211,252,.65)';
+  c.lineWidth = 2;
+  roundedRect(c,membraneX,membraneY,membraneW,membraneH,16); c.stroke();
+
+  label(c,'ALVEOLUS',leftX,42,17,C.good,'center');
+  label(c,'CAPILLARY BLOOD',rightX,42,17,C.bad,'center');
+  label(c,'Alveol–capillary membrane',midX,42,15,C.muted,'center');
+
+  // O2 particles left to right; count and speed reflect transfer
+  const nO2 = Math.round(clamp(8 + p.o2Transfer*13, 8, 58));
+  c.fillStyle = C.good;
+  for(let i=0;i<nO2;i++){
+    const t = (i/nO2 + state.t*(0.08 + p.o2Transfer*0.05)) % 1;
+    const x = lerp(82, w-100, t);
+    const y = cy - 55 + Math.sin(state.t*3 + i*.85) * 42;
+    const r = 3.2 + Math.min(3, p.fickCap*.8);
+    c.globalAlpha = x > membraneX && x < membraneX+membraneW ? .48 : .88;
+    c.beginPath(); c.arc(x,y,r,0,Math.PI*2); c.fill();
+  }
+  c.globalAlpha = 1;
+
+  // CO2 particles right to left
+  const nCO2 = Math.round(clamp(10 + (1.2/p.thickV)*12, 8, 34));
+  c.fillStyle = C.bad;
+  for(let i=0;i<nCO2;i++){
+    const t = (i/nCO2 + state.t*(0.05 + Math.min(1.2,p.fickCap)*0.035)) % 1;
+    const x = lerp(w-100, 82, t);
+    const y = cy + 58 + Math.cos(state.t*2.4 + i*.75) * 36;
+    c.globalAlpha = x > membraneX && x < membraneX+membraneW ? .42 : .82;
+    c.beginPath(); c.arc(x,y,4.3,0,Math.PI*2); c.fill();
+  }
+  c.globalAlpha = 1;
+
+  // Direction arrows
+  c.strokeStyle = 'rgba(49,208,164,.9)';
+  c.lineWidth = 4;
+  c.beginPath(); c.moveTo(130, cy-118); c.lineTo(w-130, cy-118); c.stroke();
+  c.fillStyle = 'rgba(49,208,164,.9)';
+  c.beginPath(); c.moveTo(w-130,cy-118); c.lineTo(w-146,cy-128); c.lineTo(w-146,cy-108); c.closePath(); c.fill();
+  label(c,'O₂',w*0.5,cy-134,17,C.good,'center');
+
+  c.strokeStyle = 'rgba(251,113,133,.9)';
+  c.beginPath(); c.moveTo(w-130, cy+118); c.lineTo(130, cy+118); c.stroke();
+  c.fillStyle = 'rgba(251,113,133,.9)';
+  c.beginPath(); c.moveTo(130,cy+118); c.lineTo(146,cy+108); c.lineTo(146,cy+128); c.closePath(); c.fill();
+  label(c,'CO₂',w*0.5,cy+145,17,C.bad,'center');
+
+  // Mini metrics
+  function metricBox(title,value,x,y,color){
+    c.fillStyle = 'rgba(12,18,42,.92)';
+    c.strokeStyle = 'rgba(255,255,255,.09)';
+    c.lineWidth = 1;
+    roundedRect(c,x,y,210,62,14); c.fill(); c.stroke();
+    label(c,title,x+16,y+23,12,C.muted);
+    label(c,value,x+16,y+47,20,color);
+  }
+  metricBox('Thickness, T',p.thickV.toFixed(1)+'×',48,286,C.accent);
+  metricBox('Surface area, A',p.areaV.toFixed(1)+'×',276,286,C.accent2);
+  metricBox('Diffusion coeff., D',p.diffV.toFixed(1)+'×',504,286,C.good);
+  metricBox('Relative capacity',p.fickCap.toFixed(2)+'×',732,286,p.fickCap < .8 ? C.bad : C.good);
+  metricBox('O₂ gradient, ΔP',p.gradientO2.toFixed(0)+' mmHg',960,286,C.warn);
+
+  // Barrier thickness ruler
+  c.strokeStyle = C.accent;
+  c.lineWidth = 2;
+  c.beginPath(); c.moveTo(membraneX, membraneY+membraneH+22); c.lineTo(membraneX+membraneW, membraneY+membraneH+22); c.stroke();
+  c.beginPath(); c.moveTo(membraneX, membraneY+membraneH+14); c.lineTo(membraneX, membraneY+membraneH+30); c.stroke();
+  c.beginPath(); c.moveTo(membraneX+membraneW, membraneY+membraneH+14); c.lineTo(membraneX+membraneW, membraneY+membraneH+30); c.stroke();
+  label(c,'T',midX,membraneY+membraneH+49,16,C.accent,'center');
+}
+
+
+
+function drawLungs(p){
+  const c = ctx('lung'), w = lung.width, h = lung.height;
+  c.clearRect(0,0,w,h);
+  c.fillStyle = C.bg; c.fillRect(0,0,w,h);
+  grid(c,w,h);
+
+  const cx = w*0.5, cy = h*0.55;
+  const lungInflate = 1 + 0.12 * p.inhale;
+  const breathGlow = 0.08 + 0.08 * Math.max(0,p.inhale);
+
+  // Background halo
+  const halo = c.createRadialGradient(cx, cy, 35, cx, cy, 270);
+  halo.addColorStop(0, `rgba(125,211,252,${0.18 + breathGlow})`);
+  halo.addColorStop(.42, 'rgba(167,139,250,.07)');
+  halo.addColorStop(1, 'rgba(125,211,252,0)');
+  c.fillStyle = halo;
+  c.beginPath(); c.arc(cx, cy, 285, 0, Math.PI*2); c.fill();
+
+  // Thoracic cage silhouette
+  c.strokeStyle = 'rgba(215,236,255,.12)';
+  c.lineWidth = 2.5;
+  for(let i=0;i<9;i++){
+    const yy = cy - 128 + i*31;
+    const rx = 198 - i*5;
+    const ry = 58 - i*2.2;
+    c.beginPath();
+    c.ellipse(cx, yy, rx, ry, 0, Math.PI*1.05, Math.PI*1.95);
+    c.stroke();
+  }
+
+  // Mediastinum shadow
+  const medGrad = c.createLinearGradient(cx-26,0,cx+26,0);
+  medGrad.addColorStop(0,'rgba(255,255,255,0)');
+  medGrad.addColorStop(.5,'rgba(255,255,255,.055)');
+  medGrad.addColorStop(1,'rgba(255,255,255,0)');
+  c.fillStyle = medGrad;
+  roundedRect(c,cx-30,60,60,260,28); c.fill();
+
+  function lungPath(side){
+    const s = side === 'left' ? -1 : 1;
+    const topY = cy - 130 * lungInflate;
+    const outerX = cx + s * 172 * lungInflate;
+    const innerX = cx + s * 42;
+    const baseY = cy + 125 * lungInflate;
+    c.beginPath();
+    c.moveTo(cx + s*36, topY);
+    c.bezierCurveTo(cx + s*92*lungInflate, cy-160*lungInflate, outerX, cy-98*lungInflate, outerX - s*10, cy+12);
+    c.bezierCurveTo(outerX - s*18, cy+86*lungInflate, cx + s*124*lungInflate, baseY, cx + s*62, baseY+18);
+    c.bezierCurveTo(cx + s*18, cy+96, innerX, cy+18, cx + s*36, topY);
+    c.closePath();
+  }
+
+  function fillLung(side, innerColor, outerColor){
+    lungPath(side);
+    const s = side === 'left' ? -1 : 1;
+    const g = c.createRadialGradient(cx+s*90, cy-20, 12, cx+s*112, cy+20, 170*lungInflate);
+    g.addColorStop(0, innerColor);
+    g.addColorStop(.62, outerColor);
+    g.addColorStop(1, 'rgba(125,211,252,.035)');
+    c.fillStyle = g;
+    c.fill();
+
+    lungPath(side);
+    c.strokeStyle = 'rgba(210,235,255,.34)';
+    c.lineWidth = 2;
+    c.stroke();
+
+    lungPath(side);
+    c.strokeStyle = 'rgba(125,211,252,.10)';
+    c.lineWidth = 9;
+    c.stroke();
+  }
+
+  fillLung('left','rgba(125,211,252,.32)','rgba(125,211,252,.10)');
+  fillLung('right','rgba(167,139,250,.30)','rgba(167,139,250,.09)');
+
+  // Trachea with cartilaginous rings
+  c.lineCap = 'round';
+  c.strokeStyle = 'rgba(141,224,255,.92)';
+  c.lineWidth = 15;
+  c.beginPath();
+  c.moveTo(cx, 62);
+  c.lineTo(cx, cy-78);
+  c.stroke();
+
+  c.strokeStyle = 'rgba(255,255,255,.28)';
+  c.lineWidth = 2;
+  for(let y=72; y<cy-80; y+=14){
+    c.beginPath();
+    c.moveTo(cx-10,y);
+    c.lineTo(cx+10,y);
+    c.stroke();
+  }
+
+  // Bronchial tree
+  function branch(x1,y1,angle,len,depth,baseWidth,color){
+    if(depth <= 0 || len < 10) return;
+    const x2 = x1 + Math.cos(angle)*len;
+    const y2 = y1 + Math.sin(angle)*len;
+    c.strokeStyle = color;
+    c.lineWidth = Math.max(1.2, baseWidth*depth/6);
+    c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke();
+
+    const split = 0.34 + depth*0.012;
+    branch(x2,y2,angle-split,len*.70,depth-1,baseWidth,color);
+    branch(x2,y2,angle+split,len*.67,depth-1,baseWidth,color);
+    if(depth < 4){
+      c.fillStyle = depth % 2 ? 'rgba(49,208,164,.55)' : 'rgba(125,211,252,.50)';
+      c.beginPath(); c.arc(x2,y2,2.3 + depth*.25,0,Math.PI*2); c.fill();
+    }
+  }
+
+  c.strokeStyle = 'rgba(141,224,255,.96)';
+  c.lineWidth = 11;
+  c.beginPath();
+  c.moveTo(cx,cy-78);
+  c.lineTo(cx-54,cy-20);
+  c.moveTo(cx,cy-78);
+  c.lineTo(cx+54,cy-20);
+  c.stroke();
+
+  branch(cx-54,cy-20,Math.PI*0.78,55*lungInflate,5,7,'rgba(139,213,255,.78)');
+  branch(cx+54,cy-20,Math.PI*0.22,55*lungInflate,5,7,'rgba(190,170,255,.78)');
+
+  // Subtle pulmonary vessels
+  function vesselFan(side, color){
+    const s = side === 'left' ? -1 : 1;
+    c.strokeStyle = color;
+    c.lineWidth = 1.2;
+    for(let i=0;i<18;i++){
+      const r1 = 44 + i*3;
+      const r2 = 112 + (i%5)*9;
+      c.beginPath();
+      c.moveTo(cx+s*r1, cy-10+i*3);
+      c.quadraticCurveTo(cx+s*(r2*.55), cy-74+i*10, cx+s*r2, cy-80+i*15);
+      c.stroke();
+    }
+  }
+  vesselFan('left','rgba(251,113,133,.18)');
+  vesselFan('right','rgba(49,208,164,.16)');
+
+  // Alveolar clusters
+  function alveoliCluster(x,y,scale,phaseShift){
+    for(let i=0;i<13;i++){
+      const a = i * Math.PI*2/13 + phaseShift;
+      const rr = (15 + (i%3)*5) * scale * lungInflate;
+      const ax = x + Math.cos(a)*rr;
+      const ay = y + Math.sin(a)*rr*.72;
+      const rad = (5.2 + (i%4)*.9) * scale * lungInflate;
+      const g = c.createRadialGradient(ax-rad*.35,ay-rad*.35,1,ax,ay,rad);
+      g.addColorStop(0,'rgba(255,255,255,.55)');
+      g.addColorStop(.35,'rgba(125,211,252,.32)');
+      g.addColorStop(1,'rgba(49,208,164,.12)');
+      c.fillStyle = g;
+      c.beginPath(); c.arc(ax,ay,rad,0,Math.PI*2); c.fill();
+      c.strokeStyle = 'rgba(215,236,255,.22)';
+      c.lineWidth = 1;
+      c.stroke();
+    }
+  }
+  alveoliCluster(cx-125, cy+58, 1.0, state.t*.6);
+  alveoliCluster(cx-88, cy+112, .82, state.t*.7);
+  alveoliCluster(cx+125, cy+56, 1.0, -state.t*.55);
+  alveoliCluster(cx+92, cy+116, .78, -state.t*.68);
+
+  // Animated airflow particles
+  c.fillStyle = 'rgba(125,211,252,.9)';
+  const particleCount = 18;
+  for(let i=0;i<particleCount;i++){
+    const t = (i/particleCount + state.t*(p.flow>=0 ? .42 : -.42)) % 1;
+    const tt = t < 0 ? t+1 : t;
+    const y = lerp(68, cy-38, tt);
+    const x = cx + Math.sin(tt*8 + i)*6;
+    const r = 2 + Math.sin(i)*.4;
+    c.globalAlpha = .32 + .55*Math.abs(p.flow);
+    c.beginPath(); c.arc(x,y,r,0,Math.PI*2); c.fill();
+  }
+  c.globalAlpha = 1;
+
+  // More aesthetic diaphragm integrated into the existing lung panel
+  // Mode-specific behavior:
+  // quiet: small caudal motion, dome largely preserved
+  // force/exercise/deep: greater descent and clearer flattening
+  // rapid: limited descent, dome remains relatively curved
+  const breathingMode = $('mode').value;
+  const diaphragmProfiles = {
+    quiet:    { descent: 0.82, flatten: 0.72, width: 0.65, label: 'quiet dome' },
+    force:    { descent: 1.45, flatten: 1.42, width: 1.18, label: 'forceful flattening' },
+    exercise: { descent: 1.32, flatten: 1.22, width: 1.05, label: 'active flattening' },
+    deep:     { descent: 1.55, flatten: 1.34, width: 1.12, label: 'deep controlled descent' },
+    rapid:    { descent: 0.58, flatten: 0.46, width: 0.42, label: 'limited shallow motion' }
   };
-  return svgBase(svgs[type] || svgs.page);
+  const diaProfile = diaphragmProfiles[breathingMode] || diaphragmProfiles.quiet;
+
+  const insp = Math.max(0, p.inhale);
+  const exp = Math.max(0, -p.inhale);
+  const baseMove = 0.18 + 0.34 * insp - 0.12 * exp;
+  const move = clamp(baseMove * diaProfile.descent, -0.12, 0.92);
+  const diaY = cy + 150 + 24 * move;       // inspiration: caudal descent
+
+  // Lower domeFlatten means the dome becomes visually flatter.
+  const domeFlatten = clamp(1.05 - (0.48 * move * diaProfile.flatten), 0.34, 1.18);
+  const diaRx = 202 + 30 * Math.max(0, move) * diaProfile.width;
+  const diaRy = 68 * domeFlatten;
+
+  // Soft abdominal shadow under diaphragm
+  const abdGrad = c.createLinearGradient(0, diaY-12, 0, h);
+  abdGrad.addColorStop(0,'rgba(49,208,164,.06)');
+  abdGrad.addColorStop(.45,'rgba(251,191,36,.055)');
+  abdGrad.addColorStop(1,'rgba(251,191,36,0)');
+  c.fillStyle = abdGrad;
+  c.beginPath();
+  c.ellipse(cx, diaY+30, diaRx+36, diaRy+40, 0, Math.PI*1.03, Math.PI*1.97);
+  c.lineTo(cx-diaRx-42,h);
+  c.lineTo(cx+diaRx+42,h);
+  c.closePath();
+  c.fill();
+
+  // Main diaphragm ribbon
+  const diaphragmGradient = c.createLinearGradient(cx-diaRx, diaY-diaRy, cx+diaRx, diaY+diaRy);
+  diaphragmGradient.addColorStop(0,'rgba(30,185,145,.60)');
+  diaphragmGradient.addColorStop(.38,'rgba(66,230,178,.98)');
+  diaphragmGradient.addColorStop(.62,'rgba(125,211,252,.88)');
+  diaphragmGradient.addColorStop(1,'rgba(30,185,145,.58)');
+  c.strokeStyle = diaphragmGradient;
+  c.lineWidth = 17;
+  c.lineCap = 'round';
+  c.shadowColor = 'rgba(49,208,164,.35)';
+  c.shadowBlur = 18;
+  c.beginPath();
+  c.ellipse(cx, diaY, diaRx, diaRy, 0, Math.PI*1.06, Math.PI*1.94);
+  c.stroke();
+  c.shadowBlur = 0;
+
+  // Upper highlight line
+  c.strokeStyle = 'rgba(235,255,250,.42)';
+  c.lineWidth = 3;
+  c.beginPath();
+  c.ellipse(cx, diaY-4, diaRx-4, diaRy-5, 0, Math.PI*1.08, Math.PI*1.92);
+  c.stroke();
+
+  // Muscle fibers along the dome
+  c.strokeStyle = 'rgba(5,30,35,.30)';
+  c.lineWidth = 1.5;
+  for(let i=-9;i<=9;i++){
+    const x = cx + i*(diaRx/10);
+    const rel = (x-cx)/diaRx;
+    const y = diaY - diaRy * Math.sqrt(Math.max(0, 1-rel*rel));
+    c.beginPath();
+    c.moveTo(x-6, y-10);
+    c.lineTo(x+6, y+14);
+    c.stroke();
+  }
+
+  // Descent arrows near diaphragm; mode-sensitive and still integrated into the same visual
+  const arrowAlpha = clamp(.20 + insp*.52*diaProfile.descent, .18, .88);
+  c.strokeStyle = `rgba(49,208,164,${arrowAlpha})`;
+  c.fillStyle = `rgba(49,208,164,${arrowAlpha})`;
+  c.lineWidth = breathingMode === 'force' || breathingMode === 'deep' ? 4 : 3;
+  for(const x of [cx-115, cx, cx+115]){
+    const y1 = diaY - 88;
+    const y2 = diaY - (breathingMode === 'rapid' ? 52 : 34);
+    c.beginPath(); c.moveTo(x,y1); c.lineTo(x,y2); c.stroke();
+    c.beginPath();
+    c.moveTo(x,y2);
+    c.lineTo(x-7,y2-11);
+    c.lineTo(x+7,y2-11);
+    c.closePath();
+    c.fill();
+  }
+
+  // Negative pleural pressure glow above diaphragm
+  c.strokeStyle = 'rgba(125,211,252,.20)';
+  c.lineWidth = 2;
+  for(let i=0;i<3;i++){
+    c.beginPath();
+    c.ellipse(cx, diaY-20-i*13, diaRx-28-i*22, diaRy-12-i*8, 0, Math.PI*1.10, Math.PI*1.90);
+    c.stroke();
+  }
+
+  // Compact teaching label: mode-specific diaphragm state
+  c.fillStyle = 'rgba(12,18,42,.90)';
+  c.strokeStyle = 'rgba(49,208,164,.22)';
+  c.lineWidth = 1;
+  roundedRect(c,cx-96,diaY+18,192,27,10);
+  c.fill(); c.stroke();
+  label(c,diaProfile.label,cx,diaY+37,11,C.good,'center');
+
+  function callout(text,x,y,tx,ty,color){
+    c.fillStyle = 'rgba(12,18,42,.92)';
+    c.strokeStyle = 'rgba(125,211,252,.25)';
+    c.lineWidth = 1.2;
+    roundedRect(c,x-42,y-15,84,27,9);
+    c.fill(); c.stroke();
+    label(c,text,x,y+4,11,color,'center');
+    c.strokeStyle = color;
+    c.beginPath(); c.moveTo(x,y+12); c.lineTo(tx,ty); c.stroke();
+  }
+
+  callout('Bronchi', cx-72, cy-34 + 2*Math.sin(state.t*2.5), cx-55, cy-20, C.accent);
+  callout('Alveoli', cx+112, cy+20 - 2*Math.sin(state.t*2.5), cx+128, cy+58, C.good);
+  callout('Diaphragm', cx+150, diaY+5, cx+75, diaY-32, C.good);
+
+  label(c,'Trachea',cx,50,13,C.muted,'center');
+  label(c,'Bronchial tree',cx,142,13,C.muted,'center');
+
+  label(c,'Airflow: ' + p.flow.toFixed(2) + ' L/s',20,38,16,C.text);
+  label(c,'Volume: ' + p.vol.toFixed(2) + ' L',20,62,16,C.text);
+  label(c,'Patm: ' + p.patm.toFixed(0) + ' mmHg',20,86,16,C.text);
+  label(c,'Resistance: ' + (+$('ar').value).toFixed(1),20,112,14,C.muted);
+  label(c,'Compliance: ' + (+$('c').value).toFixed(1),20,134,14,C.muted);
+  label(c,'Altitude: ' + $('alt').value + ' m',20,156,14,C.muted);
+
+  $('phase').textContent = p.flow >= 0 ? 'Inspiration' : 'Expiration';
+  $('phase').className = 'phase-indicator ' + (p.flow >= 0 ? 'inspiration' : 'expiration');
+
+  $('vtstat').textContent = p.vt.toFixed(2) + ' L';
+  $('vestat').textContent = p.ve.toFixed(1) + ' L/min';
+  $('vastat').textContent = p.va.toFixed(1) + ' L/min';
+  updateSpo2Gauge(p.spo2);
+  return p;
 }
 
-function update(){
-  const s = steps[current];
-  $("svgWrap").innerHTML = draw(s.svg);
-  $("stepTitle").textContent = s.title;
-  $("phaseLabel").textContent = s.phase;
-  $("timeLabel").textContent = s.time;
-  $("instruction").textContent = s.instruction;
-  $("lookFor").textContent = s.look;
-  $("helpText").textContent = s.help;
-  $("mistakeText").textContent = s.mistake;
-  $("stepCount").textContent = `Adım ${current + 1} / ${steps.length}`;
-  $("numBox").textContent = current + 1;
-  $("bar").style.width = `${((current + 1) / steps.length) * 100}%`;
-  $("selfCheck").classList.toggle("done", completed.has(current));
-  $("checkBtn").textContent = completed.has(current) ? "Tamamlandı" : "Tamam";
-  $("finishBox").classList.toggle("show", current === steps.length - 1 && completed.has(current));
-  renderList();
+function drawGas(p){
+  const c = ctx('gas'), w = gas.width, h = gas.height;
+  c.clearRect(0,0,w,h);
+  c.fillStyle = C.bg; c.fillRect(0,0,w,h);
+  grid(c,w,h);
+
+  const ax = w*0.28, ay = h*0.55;
+  const bx = w*0.72, by = h*0.55;
+
+  gradientCircle(c,ax,ay,96,'rgba(52,211,153,.22)','rgba(52,211,153,.05)');
+  gradientCircle(c,bx,by,96,'rgba(251,113,133,.20)','rgba(251,113,133,.05)');
+
+  c.strokeStyle = 'rgba(255,255,255,.15)';
+  c.lineWidth = 3;
+  c.beginPath(); c.moveTo(w*0.50, h*0.23); c.lineTo(w*0.50, h*0.86); c.stroke();
+
+  label(c,'Alveolus',ax,44,16,C.text,'center');
+  label(c,'Capillary blood',bx,44,16,C.text,'center');
+
+  const o2Count = Math.max(6, Math.round((p.alveO2/180)*24));
+  c.fillStyle = C.good;
+  for(let i=0;i<o2Count;i++){
+    const t = (i/o2Count + state.t*0.18) % 1;
+    const x = lerp(ax-30, bx-36, t);
+    const y = ay + Math.sin(state.t*3 + i*1.1) * 22;
+    c.beginPath(); c.arc(x,y,5,0,Math.PI*2); c.fill();
+  }
+
+  const co2Count = Math.max(4, Math.round((p.alveCO2/80)*18));
+  c.fillStyle = C.bad;
+  for(let i=0;i<co2Count;i++){
+    const t = (i/co2Count + state.t*0.14) % 1;
+    const x = lerp(bx+30, ax+36, t);
+    const y = by + Math.cos(state.t*2.6 + i*0.9) * 22;
+    c.beginPath(); c.arc(x,y,5,0,Math.PI*2); c.fill();
+  }
+
+  c.strokeStyle = 'rgba(49,208,164,.9)';
+  c.lineWidth = 3;
+  c.beginPath(); c.moveTo(ax+80, ay-30); c.lineTo(bx-80, ay-30); c.stroke();
+  c.beginPath(); c.moveTo(bx-80, ay-30); c.lineTo(bx-70, ay-36); c.lineTo(bx-70, ay-24); c.closePath(); c.fillStyle='rgba(49,208,164,.9)'; c.fill();
+
+  c.strokeStyle = 'rgba(251,113,133,.9)';
+  c.beginPath(); c.moveTo(bx-80, ay+30); c.lineTo(ax+80, ay+30); c.stroke();
+  c.beginPath(); c.moveTo(ax+80, ay+30); c.lineTo(ax+70, ay+24); c.lineTo(ax+70, ay+36); c.closePath(); c.fillStyle='rgba(251,113,133,.9)'; c.fill();
+
+  label(c,'Alveolar O₂',ax,ay+125,14,C.good,'center');
+  label(c,p.alveO2.toFixed(0) + ' mmHg',ax,ay+151,20,C.good,'center');
+  label(c,'Alveolar CO₂',bx,by+125,14,C.bad,'center');
+  label(c,p.alveCO2.toFixed(0) + ' mmHg',bx,by+151,20,C.bad,'center');
+
+  c.fillStyle = 'rgba(255,255,255,.03)';
+  c.fillRect(w*0.12, h*0.79, w*0.76, 36);
+  label(c,'Higher O₂ + lower CO₂ = better ventilation',w*0.50,h*0.815,14,C.muted,'center');
 }
 
-function renderList(){
-  const list = $("stepsList");
-  list.innerHTML = "";
-  steps.forEach((s, i) => {
-    const item = document.createElement("div");
-    item.className = "mini" + (i === current ? " current" : "") + (completed.has(i) ? " done" : "");
-    item.tabIndex = 0;
-    item.setAttribute("role", "button");
-    item.innerHTML = `<div class="dot">${completed.has(i) ? "✓" : i + 1}</div>
-      <div><div class="miniTitle">${s.title}</div><div class="miniText">${s.look}</div></div>`;
-    item.addEventListener("click", () => { current = i; update(); });
-    item.addEventListener("keydown", e => {
-      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); current = i; update(); }
-    });
-    list.appendChild(item);
+function drawVolumeChart(p){
+  const c = ctx('volchart'), w = volchart.width, h = volchart.height;
+  c.clearRect(0,0,w,h);
+  c.fillStyle = C.bg; c.fillRect(0,0,w,h);
+  grid(c,w,h);
+
+  state.volHist.push([state.t,p.vol]);
+  if(state.volHist.length > state.maxDataPoints) state.volHist.shift();
+  const hist = state.volHist.slice(-900);
+  const vals = hist.map(d => d[1]).concat([p.vol]);
+  const rawMin = Math.min(...vals);
+  const rawMax = Math.max(...vals);
+  const pad = Math.max(0.25, (rawMax - rawMin) * 0.18);
+  const minV = rawMin - pad;
+  const maxV = rawMax + pad;
+
+  c.beginPath();
+  hist.forEach((pt,i)=>{
+    const x = i/(hist.length-1 || 1) * w;
+    const y = h - ((pt[1]-minV)/(maxV-minV))*h;
+    if(i===0) c.moveTo(x,y); else c.lineTo(x,y);
   });
+  c.lineTo(w,h); c.lineTo(0,h); c.closePath();
+  const grad = c.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0,'rgba(167,139,250,.35)');
+  grad.addColorStop(1,'rgba(167,139,250,0)');
+  c.fillStyle = grad;
+  c.fill();
+
+  c.strokeStyle = C.accent2;
+  c.lineWidth = 3.5;
+  c.shadowColor = 'rgba(167,139,250,.35)';
+  c.shadowBlur = 12;
+  c.beginPath();
+  hist.forEach((pt,i)=>{
+    const x = i/(hist.length-1 || 1) * w;
+    const y = h - ((pt[1]-minV)/(maxV-minV))*h;
+    if(i===0) c.moveTo(x,y); else c.lineTo(x,y);
+  });
+  c.stroke();
+  c.shadowBlur = 0;
+
+  label(c,'Lung Volume',18,24,14,C.text);
+  label(c,p.vol.toFixed(2) + ' L',w-18,24,14,C.muted,'right');
 }
 
-function next(){
-  current = Math.min(steps.length - 1, current + 1);
-  update();
-}
-function prev(){
-  current = Math.max(0, current - 1);
-  update();
-}
-function doneNext(){
-  completed.add(current);
-  if(current < steps.length - 1) current++;
-  update();
-}
-function reset(){
-  current = 0;
-  completed.clear();
-  update();
+function drawGasChart(p){
+  const c = ctx('garchart'), w = garchart.width, h = garchart.height;
+  c.clearRect(0,0,w,h);
+  c.fillStyle = C.bg; c.fillRect(0,0,w,h);
+  grid(c,w,h);
+
+  state.gasHist.push([state.t,p.alveO2,p.alveCO2]);
+  if(state.gasHist.length > state.maxDataPoints) state.gasHist.shift();
+  const hist = state.gasHist.slice(-900);
+
+  const minO2 = 40, maxO2 = 180;
+  const minCO2 = 15, maxCO2 = 100;
+
+  c.strokeStyle = C.good;
+  c.lineWidth = 3.5;
+  c.shadowColor = 'rgba(49,208,164,.4)';
+  c.shadowBlur = 10;
+  c.beginPath();
+  hist.forEach((pt,i)=>{
+    const x = i/(hist.length-1 || 1) * w;
+    const y = h - ((pt[1]-minO2)/(maxO2-minO2))*h;
+    if(i===0) c.moveTo(x,y); else c.lineTo(x,y);
+  });
+  c.stroke();
+
+  c.strokeStyle = C.bad;
+  c.beginPath();
+  hist.forEach((pt,i)=>{
+    const x = i/(hist.length-1 || 1) * w;
+    const y = h - ((pt[2]-minCO2)/(maxCO2-minCO2))*h;
+    if(i===0) c.moveTo(x,y); else c.lineTo(x,y);
+  });
+  c.stroke();
+  c.shadowBlur = 0;
+
+  label(c,'O₂',18,24,14,C.good);
+  label(c,'CO₂',64,24,14,C.bad);
+  label(c,p.alveO2.toFixed(0) + ' / ' + p.alveCO2.toFixed(0),w-18,24,14,C.muted,'right');
 }
 
-$("prevBtn").addEventListener("click", prev);
-$("nextBtn").addEventListener("click", next);
-$("doneNextBtn").addEventListener("click", doneNext);
-$("resetBtn").addEventListener("click", reset);
-$("checkBtn").addEventListener("click", () => {
-  if(completed.has(current)) completed.delete(current);
-  else completed.add(current);
-  update();
-});
-document.addEventListener("keydown", e => {
-  if(e.key === "ArrowRight") next();
-  if(e.key === "ArrowLeft") prev();
-  if(e.key === "Enter") doneNext();
-});
-update();
+function tick(){  if(state.running) state.t += 0.016;
+  const p = physiology();
+  drawLungs(p);
+  drawGas(p);
+  drawFick(p);
+  drawVolumeChart(p);
+  drawGasChart(p);
+  updateInterpretations(p);
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
 </script>
 </body>
 </html>
